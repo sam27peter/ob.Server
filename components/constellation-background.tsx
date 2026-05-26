@@ -2,118 +2,94 @@
 
 import { useEffect, useRef } from "react"
 
-interface Node {
+type Particle = {
   x: number
   y: number
   vx: number
   vy: number
-  size: number
-  hue: number
 }
 
-export function ConstellationBackground() {
+export default function ConstellationBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mouseRef = useRef({ x: -9999, y: -9999 })
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext("2d", { alpha: true })
+
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2)
-    let width = 0
-    let height = 0
-    let nodes: Node[] = []
-    let animId = 0
+    let animationId = 0
+    let width = window.innerWidth
+    let height = window.innerHeight
 
-    const NODE_COUNT_BASE = 70
-    const CONNECT_DIST = 130
+    const mouse = {
+      x: -9999,
+      y: -9999,
+    }
+
+    const PARTICLE_COUNT = 55
+    const CONNECT_DISTANCE = 150
+
+    const particles: Particle[] = Array.from(
+      { length: PARTICLE_COUNT },
+      () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.12,
+      })
+    )
 
     const resize = () => {
       width = window.innerWidth
       height = window.innerHeight
-      canvas.width = width * dpr
-      canvas.height = height * dpr
-      canvas.style.width = `${width}px`
-      canvas.style.height = `${height}px`
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = Math.min(
-        NODE_COUNT_BASE,
-        Math.floor((width * height) / 22000),
-      )
-      nodes = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        size: Math.random() < 0.5 ? 2 : 3,
-        hue: Math.random() < 0.5 ? 320 : 282, // pink vs violet
-      }))
+      canvas.width = width
+      canvas.height = height
     }
 
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX
-      mouseRef.current.y = e.clientY
-    }
-    const onLeave = () => {
-      mouseRef.current.x = -9999
-      mouseRef.current.y = -9999
+    const moveMouse = (e: MouseEvent) => {
+      mouse.x = e.clientX
+      mouse.y = e.clientY
     }
 
-    const draw = () => {
+    const leaveMouse = () => {
+      mouse.x = -9999
+      mouse.y = -9999
+    }
+
+    const animate = () => {
       ctx.clearRect(0, 0, width, height)
 
-      const mx = mouseRef.current.x
-      const my = mouseRef.current.y
-      const repelRadius = 110
+      // move particles
+      for (const p of particles) {
+        p.x += p.vx
+        p.y += p.vy
 
-      for (const n of nodes) {
-        // mouse repel
-        const dx = n.x - mx
-        const dy = n.y - my
-        const d2 = dx * dx + dy * dy
-        if (d2 < repelRadius * repelRadius) {
-          const d = Math.sqrt(d2) || 1
-          const force = (repelRadius - d) / repelRadius
-          n.vx += (dx / d) * force * 0.4
-          n.vy += (dy / d) * force * 0.4
-        }
-
-        n.x += n.vx
-        n.y += n.vy
-
-        // damping
-        n.vx *= 0.96
-        n.vy *= 0.96
-
-        // baseline drift
-        if (Math.abs(n.vx) < 0.05) n.vx += (Math.random() - 0.5) * 0.05
-        if (Math.abs(n.vy) < 0.05) n.vy += (Math.random() - 0.5) * 0.05
-
-        // wrap
-        if (n.x < 0) n.x = width
-        if (n.x > width) n.x = 0
-        if (n.y < 0) n.y = height
-        if (n.y > height) n.y = 0
+        if (p.x <= 0 || p.x >= width) p.vx *= -1
+        if (p.y <= 0 || p.y >= height) p.vy *= -1
       }
 
-      // connections
-      ctx.lineWidth = 1
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i]
-          const b = nodes[j]
+      // draw lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i]
+          const b = particles[j]
+
           const dx = a.x - b.x
           const dy = a.y - b.y
-          const d2 = dx * dx + dy * dy
-          if (d2 < CONNECT_DIST * CONNECT_DIST) {
-            const d = Math.sqrt(d2)
-            const alpha = (1 - d / CONNECT_DIST) * 0.35
-            const hue = (a.hue + b.hue) / 2
-            ctx.strokeStyle = `hsla(${hue}, 100%, 65%, ${alpha})`
+          const dist = Math.sqrt(dx * dx + dy * dy)
+
+          if (dist < CONNECT_DISTANCE) {
             ctx.beginPath()
+
+            ctx.strokeStyle = `rgba(0,255,100,${
+              (1 - dist / CONNECT_DISTANCE) * 0.12
+            })`
+
+            ctx.lineWidth = 1
+
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
             ctx.stroke()
@@ -121,42 +97,58 @@ export function ConstellationBackground() {
         }
       }
 
-      // nodes (pixel squares with glow)
-      for (const n of nodes) {
-        const distToMouse = Math.hypot(n.x - mx, n.y - my)
-        const boost = distToMouse < 200 ? 1 - distToMouse / 200 : 0
+      // mouse interaction
+      for (const p of particles) {
+        const dx = p.x - mouse.x
+        const dy = p.y - mouse.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
 
-        ctx.shadowBlur = 12 + boost * 14
-        ctx.shadowColor = `hsla(${n.hue}, 100%, 60%, 0.9)`
-        ctx.fillStyle = `hsla(${n.hue}, 100%, ${65 + boost * 20}%, ${0.85 + boost * 0.15})`
-        const s = n.size + boost * 1.2
-        ctx.fillRect(n.x - s / 2, n.y - s / 2, s, s)
+        ctx.beginPath()
+
+        ctx.shadowBlur = 10
+        ctx.shadowColor = "#00ff66"
+        ctx.fillStyle = "#00ff66"
+
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
+        ctx.fill()
+
+        ctx.shadowBlur = 0
+        
+        if (dist < 180) {
+          ctx.beginPath()
+
+          ctx.strokeStyle = `rgba(0,255,100,${
+            (1 - dist / 180) * 0.45
+          })`
+
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(mouse.x, mouse.y)
+          ctx.stroke()
+        }
       }
-      ctx.shadowBlur = 0
 
-      animId = requestAnimationFrame(draw)
+      animationId = requestAnimationFrame(animate)
     }
 
     resize()
-    draw()
+    animate()
+
     window.addEventListener("resize", resize)
-    window.addEventListener("mousemove", onMove)
-    window.addEventListener("mouseleave", onLeave)
+    window.addEventListener("mousemove", moveMouse)
+    window.addEventListener("mouseleave", leaveMouse)
 
     return () => {
-      cancelAnimationFrame(animId)
+      cancelAnimationFrame(animationId)
       window.removeEventListener("resize", resize)
-      window.removeEventListener("mousemove", onMove)
-      window.removeEventListener("mouseleave", onLeave)
+      window.removeEventListener("mousemove", moveMouse)
+      window.removeEventListener("mouseleave", leaveMouse)
     }
   }, [])
 
   return (
     <canvas
       ref={canvasRef}
-      aria-hidden
-      className="fixed inset-0 -z-10 pointer-events-none"
-      style={{ opacity: 0.55 }}
+      className="fixed inset-0 pointer-events-none z-0"
     />
   )
 }

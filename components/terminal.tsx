@@ -83,25 +83,25 @@ export function Terminal({
       onClick={() => inputRef.current?.focus()}
     >
       {/* header */}
-      <div className="flex items-center justify-between border-b border-[#c44dff]/30 px-5 py-3 bg-[#050505]/80">
-        <div className="flex items-center gap-2 font-mono text-xs text-[#c44dff]/80">
-          <span className="w-2 h-2 bg-[#ff00cc] animate-pulse" />
-          <span className="w-2 h-2 bg-[#c44dff]" />
-          <span className="w-2 h-2 bg-[#8a2eff]" />
+      <div className="flex items-center justify-between border-b border-[#00ff55]/30 px-5 py-3 bg-[#050505]/80">
+        <div className="flex items-center gap-2 font-mono text-xs text-[#00ff55]/80">
+          <span className="w-2 h-2 bg-[#00ff66] animate-pulse" />
+          <span className="w-2 h-2 bg-[#00ff55]" />
+          <span className="w-2 h-2 bg-[#33ff88]" />
           <span className="ml-3 tracking-widest">ob.Server@terminal</span>
         </div>
-        <div className="font-mono text-[10px] tracking-widest text-[#ff00cc]/70 flicker">
+        <div className="font-mono text-[10px] tracking-widest text-[#00ff66]/70 flicker">
           ● SECURE
         </div>
       </div>
 
       {/* command grid */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-[#c44dff]/20">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-[#00ff55]/20">
         {COMMANDS.map((c) => (
           <button
             key={c.cmd}
             onClick={() => runCommand(c.cmd)}
-            className="group relative bg-[#0a0a0a] hover:bg-[#1a0d1f] px-3 py-3 font-mono text-[10px] md:text-xs tracking-[0.15em] text-[#c44dff] hover:text-[#ff00cc] transition-colors text-left"
+            className="group relative bg-[#0a0a0a] hover:bg-[#1a0d1f] px-3 py-3 font-mono text-[10px] md:text-xs tracking-[0.15em] text-[#00ff55] hover:text-[#00ff66] transition-colors text-left"
           >
             <div className="flex items-center justify-between">
               <span className="opacity-60 group-hover:opacity-100">›</span>
@@ -131,13 +131,13 @@ export function Terminal({
               line.type === "in"
                 ? "text-[#f5e8ff]"
                 : line.type === "err"
-                  ? "text-[#ff00cc]"
-                  : "text-[#c44dff]"
+                  ? "text-[#00ff66]"
+                  : "text-[#00ff55]"
             }
           >
             {line.type === "in" ? (
               <>
-                <span className="text-[#ff00cc]">ob.Server@terminal:~$</span>{" "}
+                <span className="text-[#00ff66]">ob.Server@terminal:~$</span>{" "}
                 {line.text}
               </>
             ) : (
@@ -146,7 +146,7 @@ export function Terminal({
           </div>
         ))}
         <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-1">
-          <span className="text-[#ff00cc] shrink-0">ob.Server@terminal:~$</span>
+          <span className="text-[#00ff66] shrink-0">ob.Server@terminal:~$</span>
           <input
             ref={inputRef}
             value={input}
@@ -154,10 +154,10 @@ export function Terminal({
             autoFocus
             spellCheck={false}
             autoComplete="off"
-            className="flex-1 bg-transparent border-none outline-none text-[#f5e8ff] caret-[#ff00cc] font-mono"
+            className="flex-1 bg-transparent border-none outline-none text-[#f5e8ff] caret-[#00ff66] font-mono"
             aria-label="Terminal input"
           />
-          <span className="w-2 h-4 bg-[#ff00cc] animate-pulse" aria-hidden />
+          <span className="w-2 h-4 bg-[#00ff66] animate-pulse" aria-hidden />
         </form>
       </div>
     </motion.div>

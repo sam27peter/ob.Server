@@ -6,10 +6,10 @@ import { X, ExternalLink, Github } from "lucide-react"
 import type { Project } from "@/lib/data"
 
 const STATUS_COLORS: Record<Project["status"], string> = {
-  ACTIVE: "text-[#c44dff] border-[#c44dff]",
+  ACTIVE: "text-[#00ff55] border-[#00ff55]",
   ARCHIVED: "text-[#a78bbf] border-[#a78bbf]",
-  CLASSIFIED: "text-[#ff00cc] border-[#ff00cc]",
-  EXPERIMENTAL: "text-[#8a2eff] border-[#8a2eff]",
+  CLASSIFIED: "text-[#00ff66] border-[#00ff66]",
+  EXPERIMENTAL: "text-[#33ff88] border-[#33ff88]",
 }
 
 export function ProjectPanel({
@@ -74,11 +74,11 @@ export function ProjectPanel({
             className="relative w-full max-w-3xl holo-border box-neon-violet bg-[#0d0d0d]/95 max-h-[90vh] overflow-y-auto"
           >
             {/* terminal header */}
-            <div className="flex items-center justify-between border-b border-[#c44dff]/30 px-5 py-3 bg-[#050505]/80">
-              <div className="flex items-center gap-2 font-mono text-xs text-[#c44dff]/80">
-                <span className="w-2 h-2 bg-[#ff00cc]" />
-                <span className="w-2 h-2 bg-[#c44dff]" />
-                <span className="w-2 h-2 bg-[#8a2eff]" />
+            <div className="flex items-center justify-between border-b border-[#00ff55]/30 px-5 py-3 bg-[#050505]/80">
+              <div className="flex items-center gap-2 font-mono text-xs text-[#00ff55]/80">
+                <span className="w-2 h-2 bg-[#00ff66]" />
+                <span className="w-2 h-2 bg-[#00ff55]" />
+                <span className="w-2 h-2 bg-[#33ff88]" />
                 <span className="ml-3 tracking-widest hidden sm:inline">
                   ob.Server@archive:~/{project.id}.dat
                 </span>
@@ -86,7 +86,7 @@ export function ProjectPanel({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="text-[#c44dff] hover:text-[#ff00cc] transition-colors"
+                className="text-[#00ff55] hover:text-[#00ff66] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -103,17 +103,17 @@ export function ProjectPanel({
                       animate={{ opacity: 1, x: 0 }}
                       className="flex gap-3 text-[#e8d5ff]"
                     >
-                      <span className="text-[#ff00cc]">{">"}</span>
+                      <span className="text-[#00ff66]">{">"}</span>
                       <span>
                         {line}
                         {i < decryptStep - 1 && (
-                          <span className="ml-2 text-[#8a2eff]">[OK]</span>
+                          <span className="ml-2 text-[#33ff88]">[OK]</span>
                         )}
                       </span>
                     </motion.div>
                   ))}
                   {decryptStep < decryptLines.length && (
-                    <div className="text-[#ff00cc] cursor-blink ml-5" />
+                    <div className="text-[#00ff66] cursor-blink ml-5" />
                   )}
                 </div>
               ) : (
@@ -124,7 +124,7 @@ export function ProjectPanel({
                 >
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div>
-                      <p className="text-[10px] tracking-[0.3em] text-[#c44dff]/60 mb-2">
+                      <p className="text-[10px] tracking-[0.3em] text-[#00ff55]/60 mb-2">
                         {">> ARCHIVE FILE"}
                       </p>
                       <h3
@@ -142,8 +142,8 @@ export function ProjectPanel({
                     </span>
                   </div>
 
-                  <div className="border-l-2 border-[#c44dff]/50 pl-4">
-                    <p className="text-[10px] tracking-[0.3em] text-[#c44dff]/60 mb-2">
+                  <div className="border-l-2 border-[#00ff55]/50 pl-4">
+                    <p className="text-[10px] tracking-[0.3em] text-[#00ff55]/60 mb-2">
                       {"// DESCRIPTION"}
                     </p>
                     <p className="text-sm md:text-base text-[#e8d5ff] leading-relaxed">
@@ -152,14 +152,14 @@ export function ProjectPanel({
                   </div>
 
                   <div>
-                    <p className="text-[10px] tracking-[0.3em] text-[#c44dff]/60 mb-3">
+                    <p className="text-[10px] tracking-[0.3em] text-[#00ff55]/60 mb-3">
                       {"// TECH STACK"}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {project.tech.map((t) => (
                         <span
                           key={t}
-                          className="px-3 py-1 border border-[#8a2eff]/50 text-xs text-[#c44dff] bg-[#8a2eff]/5"
+                          className="px-3 py-1 border border-[#33ff88]/50 text-xs text-[#00ff55] bg-[#33ff88]/5"
                         >
                           {t}
                         </span>
@@ -167,8 +167,8 @@ export function ProjectPanel({
                     </div>
                   </div>
 
-                  <div className="border border-[#c44dff]/30 bg-[#050505] p-4 space-y-2">
-                    <div className="flex items-center gap-2 text-[#ff00cc]">
+                  <div className="border border-[#00ff55]/30 bg-[#050505] p-4 space-y-2">
+                    <div className="flex items-center gap-2 text-[#00ff66]">
                       <Github className="w-4 h-4" />
                       <span className="text-sm font-bold tracking-wider">
                         {project.repo}
@@ -181,7 +181,7 @@ export function ProjectPanel({
                       href={project.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 mt-2 text-xs tracking-widest text-[#c44dff] hover:text-[#ff00cc] transition-colors group"
+                      className="inline-flex items-center gap-2 mt-2 text-xs tracking-widest text-[#00ff55] hover:text-[#00ff66] transition-colors group"
                     >
                       <span>{">> ACCESS REPOSITORY"}</span>
                       <ExternalLink className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
