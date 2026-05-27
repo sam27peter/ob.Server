@@ -33,43 +33,177 @@ const STATUS_COLOR: Record<Project["status"], string> = {
 export function DossierSection() {
   return (
     <SectionShell id="dossier" label="// 01 — DOSSIER.dat" title="DOSSIER">
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-1 holo-border p-6 font-mono text-xs space-y-3">
-          <div>
-            <span className="text-[#00ff55]/60">ALIAS:</span>{" "}
-            <span className="text-[#00ff66] neon-pink-glow">
-              {DOSSIER.alias}
-            </span>
-          </div>
-          <div>
-            <span className="text-[#00ff55]/60">DESIGNATION:</span>{" "}
-            <span className="text-[#e8d5ff]">{DOSSIER.designation}</span>
-          </div>
-          <div>
-            <span className="text-[#00ff55]/60">ORIGIN:</span>{" "}
-            <span className="text-[#e8d5ff] flicker">{DOSSIER.origin}</span>
-          </div>
-          <div>
-            <span className="text-[#00ff55]/60">CLEARANCE:</span>{" "}
-            <span className="text-[#00ff66]">LEVEL-9</span>
-          </div>
-          <div>
-            <span className="text-[#00ff55]/60">STATUS:</span>{" "}
-            <span className="inline-flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#00ff55] animate-pulse" />
-              <span className="text-[#00ff55]">ONLINE</span>
-            </span>
-          </div>
-        </div>
+      {/* ── SPLIT LAYOUT ── */}
+      <div className="grid md:grid-cols-2 gap-0 md:gap-16 items-center">
 
-        <div className="md:col-span-2 holo-border p-6 font-mono text-sm">
-          <p className="text-[10px] tracking-[0.3em] text-[#00ff55]/60 mb-4">
-            {">> SUBJECT BIOGRAPHY"}
-          </p>
-          <pre className="whitespace-pre-wrap font-mono text-[#e8d5ff] leading-relaxed text-sm">
-            {DOSSIER.bio}
-          </pre>
-        </div>
+        {/* ════ LEFT — TERMINAL PORTRAIT ════ */}
+        <motion.div
+          initial={{ opacity: 0, x: -32 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="relative flex justify-center md:justify-start mb-12 md:mb-0"
+        >
+          {/* Portrait frame wrapper */}
+          <div className="relative w-full max-w-[340px] md:max-w-full aspect-square">
+
+            {/* Corner bracket decorations */}
+            <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#39FF14] z-20 pointer-events-none" />
+            <span className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#39FF14] z-20 pointer-events-none" />
+            <span className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#39FF14] z-20 pointer-events-none" />
+            <span className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#39FF14] z-20 pointer-events-none" />
+
+            {/* Scanline overlay */}
+            <span
+              className="absolute inset-0 z-10 pointer-events-none"
+              style={{
+                background:
+                  "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
+                mixBlendMode: "multiply",
+              }}
+            />
+
+            {/* Green channel tint */}
+            <span
+              className="absolute inset-0 z-10 pointer-events-none"
+              style={{
+                background: "rgba(57,255,20,0.04)",
+                mixBlendMode: "screen",
+              }}
+            />
+
+            {/* Vignette */}
+            <span
+              className="absolute inset-0 z-10 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, transparent 55%, rgba(5,5,5,0.75) 100%)",
+              }}
+            />
+
+            {/* The portrait image */}
+            <img
+              src="/sam-dossier.png"
+              alt="SAM 27 — Subject Portrait"
+              className="w-full h-full object-cover object-center"
+              style={{
+                filter: "grayscale(35%) contrast(1.08) brightness(0.92)",
+                display: "block",
+              }}
+            />
+
+            {/* Classification watermark */}
+            <div
+              className="absolute bottom-4 left-0 right-0 z-20 flex justify-center"
+              aria-hidden
+            >
+              <span
+                className="font-mono text-[9px] tracking-[0.45em] text-[#39FF14]/40 px-3 py-1"
+                style={{ letterSpacing: "0.4em" }}
+              >
+                CLASSIFIED // FILE-0001
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ════ RIGHT — DOSSIER CONTENT ════ */}
+        <motion.div
+          initial={{ opacity: 0, x: 32 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+          className="flex flex-col gap-8"
+        >
+
+          {/* ── CHUNKY TITLE ── */}
+          <div>
+            <p className="font-mono text-[10px] tracking-[0.5em] text-[#39FF14]/50 mb-3">
+              {"// SUBJECT ID — PERSONNEL FILE"}
+            </p>
+            {/* "SAM 27" in big blocky pixel font */}
+            <h2
+              className="leading-none tracking-tight text-[#39FF14] select-none"
+              style={{
+                fontFamily: "var(--font-pixel)",
+                fontSize: "clamp(3.8rem, 10vw, 7.5rem)",
+                fontWeight: 700,
+                textShadow: "0 0 4px rgba(57,255,20,0.15)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              SAM
+              <br />
+              <span style={{ letterSpacing: "0.12em" }}>27</span>
+            </h2>
+          </div>
+
+          {/* ── TERMINAL DIVIDER ── */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#39FF14]/20" />
+            <span className="font-mono text-[9px] text-[#39FF14]/40 tracking-[0.4em]">
+              ◈
+            </span>
+            <div className="h-px flex-1 bg-[#39FF14]/20" />
+          </div>
+
+          {/* ── METADATA BLOCK ── */}
+          <div className="font-mono text-xs space-y-2.5">
+            {[
+              { key: "STATUS", value: "ONLINE", accent: true },
+              { key: "ROLE", value: "AI / ML DEVELOPER", accent: false },
+              { key: "SYSTEM", value: "ob.Server", accent: false },
+              { key: "MODE", value: "PERSONAL OPERATING TERMINAL", accent: false },
+            ].map(({ key, value, accent }) => (
+              <div key={key} className="flex items-baseline gap-0">
+                <span className="text-[#39FF14]/45 w-[11ch] shrink-0 tracking-[0.25em]">
+                  {key}
+                </span>
+                <span className="text-[#39FF14]/40 mr-3">:</span>
+                <span
+                  className={
+                    accent
+                      ? "text-[#39FF14] tracking-[0.2em] flex items-center gap-2"
+                      : "text-white/70 tracking-[0.1em]"
+                  }
+                >
+                  {accent && (
+                    <span className="inline-block w-1.5 h-1.5 bg-[#39FF14] animate-pulse" />
+                  )}
+                  {value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* ── TERMINAL DIVIDER 2 ── */}
+          <div className="h-px w-full bg-gradient-to-r from-[#39FF14]/20 via-[#39FF14]/10 to-transparent" />
+
+          {/* ── BIO ── */}
+          <div>
+            <p className="font-mono text-[9px] tracking-[0.4em] text-[#39FF14]/40 mb-3">
+              {"// ABOUT"}
+            </p>
+            <p
+              className="text-white/75 leading-7 text-sm"
+              style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.01em" }}
+            >
+              A curious builder focused on AI, ML, computer vision, interactive
+              systems, and creative engineering. Exploring software, electronics,
+              automation, and immersive interfaces.
+            </p>
+          </div>
+
+          {/* ── BOTTOM TERMINAL DIVIDER ── */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#39FF14]/10" />
+            <span className="font-mono text-[9px] text-[#39FF14]/25 tracking-[0.35em]">
+              END OF FILE
+            </span>
+            <div className="h-px flex-1 bg-[#39FF14]/10" />
+          </div>
+
+        </motion.div>
       </div>
     </SectionShell>
   );
@@ -93,7 +227,7 @@ export function ArchivesSection({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.toUpperCase();
+      const key = (e.key || "").toUpperCase();
       if (key === "D" || e.key === "ArrowRight") {
         nextProject();
       } else if (key === "A" || e.key === "ArrowLeft") {
@@ -234,11 +368,9 @@ export function ArchivesSection({
                   const nextAngle = ((i + 1) / PROJECTS.length) * 360;
                   const isActive = i === index;
 
-                  const arc = `M 180,180 L ${180 + 150 * Math.cos((angle * Math.PI) / 180)},${
-                    180 + 150 * Math.sin((angle * Math.PI) / 180)
-                  } A 150,150 0 0,1 ${180 + 150 * Math.cos((nextAngle * Math.PI) / 180)},${
-                    180 + 150 * Math.sin((nextAngle * Math.PI) / 180)
-                  } Z`;
+                  const arc = `M 180,180 L ${180 + 150 * Math.cos((angle * Math.PI) / 180)},${180 + 150 * Math.sin((angle * Math.PI) / 180)
+                    } A 150,150 0 0,1 ${180 + 150 * Math.cos((nextAngle * Math.PI) / 180)},${180 + 150 * Math.sin((nextAngle * Math.PI) / 180)
+                    } Z`;
 
                   return (
                     <path
@@ -483,10 +615,9 @@ export function ArchivesSection({
                 tracking-[0.2em]
                 text-sm
                 transition-all
-                ${
-                  currentProject.url
-                    ? "border-[#39FF14]/30 text-[#39FF14] hover:bg-[#39FF14]/10 cursor-pointer"
-                    : "border-[#39FF14]/10 text-[#39FF14]/40 cursor-not-allowed"
+                ${currentProject.url
+                  ? "border-[#39FF14]/30 text-[#39FF14] hover:bg-[#39FF14]/10 cursor-pointer"
+                  : "border-[#39FF14]/10 text-[#39FF14]/40 cursor-not-allowed"
                 }
               `}
             >
@@ -855,66 +986,175 @@ export function MissionsSection() {
 }
 
 export function ContactSection() {
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "sent">("idle");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus("sending");
+    // Simulate sending
+    setTimeout(() => setFormStatus("sent"), 1500);
+  };
+
   return (
     <SectionShell
       id="contact"
       label="// 05 — CONTACT_CHANNEL.lnk"
-      title="CONTACT"
+      title="CONTACT CHANNEL"
     >
-      <div className="holo-border box-neon-pink p-6 md:p-10 max-w-3xl">
-        <p className="font-mono text-xs text-[#00ff55]/70 mb-6">
-          {">> SECURE CHANNEL ESTABLISHED. AWAITING TRANSMISSION."}
-        </p>
-        <p
-          className="font-sans text-2xl md:text-4xl tracking-wider text-[#f5e8ff] mb-8 neon-pink-glow leading-tight"
-          style={{ fontFamily: "var(--font-pixel)" }}
+      <div className="grid lg:grid-cols-5 gap-12 lg:gap-8 items-start mt-8">
+        {/* LEFT / TOP: FORM */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="lg:col-span-3 w-full"
         >
-          Send signal.
-          <br />
-          Build something{" "}
-          <span data-text="dangerous." className="glitch text-[#00ff66]">
-            dangerous.
-          </span>
-        </p>
-        <div className="grid sm:grid-cols-3 gap-3">
-          {[
-            {
-              icon: Mail,
-              label: "ENCRYPTED MAIL",
-              href: "mailto:samthadhu@gmail.com",
-            },
-            {
-              icon: Github,
-              label: "GITHUB",
-              href: "https://github.com/sam27peter",
-            },
-            {
-              icon: Linkedin,
-              label: "LINKEDIN",
-              href: "https://www.linkedin.com/in/sam-peter",
-            },
-          ].map(({ icon: Icon, label, href }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-4 holo-border px-5 py-4 hover:box-neon-pink transition-all"
+          <div className="mb-8 border-b border-[#39FF14]/20 pb-4">
+            <h3 className="font-mono text-[#39FF14]/80 text-sm tracking-[0.2em]">
+              [ SECURE COMMUNICATION TERMINAL ]
+            </h3>
+            <p className="font-mono text-xs text-white/50 mt-4 tracking-wide leading-relaxed">
+              Ask me about projects, collaborations, ideas, or opportunities.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
+              {/* NAME */}
+              <div className="space-y-2">
+                <label htmlFor="name" className="block font-mono text-[10px] text-[#39FF14]/60 tracking-[0.2em]">
+                  NAME
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  className="w-full bg-[#050505] border border-[#39FF14]/20 focus:border-[#39FF14]/60 outline-none px-4 py-3 font-mono text-sm text-white transition-colors"
+                />
+              </div>
+              {/* EMAIL */}
+              <div className="space-y-2">
+                <label htmlFor="email" className="block font-mono text-[10px] text-[#39FF14]/60 tracking-[0.2em]">
+                  EMAIL
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  className="w-full bg-[#050505] border border-[#39FF14]/20 focus:border-[#39FF14]/60 outline-none px-4 py-3 font-mono text-sm text-white transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* SUBJECT */}
+            <div className="space-y-2">
+              <label htmlFor="subject" className="block font-mono text-[10px] text-[#39FF14]/60 tracking-[0.2em]">
+                SUBJECT
+              </label>
+              <input
+                id="subject"
+                type="text"
+                required
+                className="w-full bg-[#050505] border border-[#39FF14]/20 focus:border-[#39FF14]/60 outline-none px-4 py-3 font-mono text-sm text-white transition-colors"
+              />
+            </div>
+
+            {/* MESSAGE */}
+            <div className="space-y-2">
+              <label htmlFor="message" className="block font-mono text-[10px] text-[#39FF14]/60 tracking-[0.2em]">
+                MESSAGE
+              </label>
+              <textarea
+                id="message"
+                required
+                rows={5}
+                className="w-full bg-[#050505] border border-[#39FF14]/20 focus:border-[#39FF14]/60 outline-none px-4 py-3 font-mono text-sm text-white transition-colors resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={formStatus !== "idle"}
+              className="w-full border border-[#39FF14]/40 hover:bg-[#39FF14]/10 text-[#39FF14] font-mono text-xs tracking-[0.2em] py-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Icon className="w-5 h-5 shrink-0 text-[#00ff66] group-hover:scale-110 transition-transform" />
-              <span className="font-mono text-xs tracking-widest text-[#e8d5ff] group-hover:text-[#00ff66]">
-                {label}
-              </span>
-            </a>
-          ))}
-        </div>
+              {formStatus === "idle" && "SEND SECURE TRANSMISSION"}
+              {formStatus === "sending" && "TRANSMITTING..."}
+              {formStatus === "sent" && "TRANSMISSION SUCCESSFUL"}
+            </button>
+          </form>
+        </motion.div>
+
+        {/* RIGHT / BOTTOM: DOWNLOADS & NETWORK */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="lg:col-span-2 space-y-12"
+        >
+          {/* DOWNLOADS */}
+          <div>
+            <h4 className="font-mono text-[#39FF14]/80 text-xs tracking-[0.2em] mb-2">
+              DOWNLOADS
+            </h4>
+            <div className="h-px w-full bg-[#39FF14]/20 mb-6" />
+
+            <div className="space-y-4">
+              <a
+                href="/cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full border border-[#39FF14]/20 hover:border-[#39FF14]/50 bg-[#050505] hover:bg-[#39FF14]/5 px-4 py-3 font-mono text-xs text-[#39FF14]/80 tracking-[0.15em] transition-all text-center"
+              >
+                [ DOWNLOAD CV ]
+              </a>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full border border-[#39FF14]/20 hover:border-[#39FF14]/50 bg-[#050505] hover:bg-[#39FF14]/5 px-4 py-3 font-mono text-xs text-[#39FF14]/80 tracking-[0.15em] transition-all text-center"
+              >
+                [ DOWNLOAD RESUME ]
+              </a>
+            </div>
+          </div>
+
+          {/* NETWORK */}
+          <div>
+            <h4 className="font-mono text-[#39FF14]/80 text-xs tracking-[0.2em] mb-2">
+              NETWORK
+            </h4>
+            <div className="h-px w-full bg-[#39FF14]/20 mb-6" />
+
+            <div className="flex flex-col gap-3">
+              {[
+                { label: "GITHUB", href: "https://github.com/sam27peter", icon: Github },
+                { label: "LINKEDIN", href: "https://www.linkedin.com/in/sam-peter", icon: Linkedin },
+                { label: "EMAIL", href: "mailto:samthadhu@gmail.com", icon: Mail },
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between border border-transparent hover:border-[#39FF14]/20 bg-transparent hover:bg-[#39FF14]/5 px-4 py-3 transition-all"
+                >
+                  <span className="font-mono text-xs text-white/70 group-hover:text-[#39FF14] tracking-[0.15em] transition-colors">
+                    {item.label}
+                  </span>
+                  <item.icon className="w-4 h-4 text-[#39FF14]/50 group-hover:text-[#39FF14] transition-colors" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
 
-      <div className="mt-16 text-center font-mono text-[10px] tracking-[0.4em] text-[#00ff55]/40">
+      <div className="mt-20 text-center font-mono text-[10px] tracking-[0.4em] text-[#39FF14]/30">
         <p>{"// END OF TRANSMISSION"}</p>
-        <p className="mt-2 flicker">
-          ob.Server © {new Date().getFullYear()} — ALL RIGHTS RESERVED — NO
-          TRACE LEFT BEHIND
+        <p className="mt-2">
+          ob.Server © {new Date().getFullYear()} — ALL RIGHTS RESERVED — NO TRACE LEFT BEHIND
         </p>
       </div>
     </SectionShell>
