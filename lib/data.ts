@@ -105,7 +105,36 @@ export const SKILLS = [
   { category: "FRONTEND", items: ["TypeScript", "React", "Next.js", "WebGL", "Framer Motion"] },
   { category: "BACKEND", items: ["Rust", "Go", "Python", "PostgreSQL", "Distributed Systems"] },
   { category: "INFRA", items: ["Kubernetes", "eBPF", "Vercel", "Edge Compute", "Cryptography"] },
+  { category: "ELECTRONICS", items: ["Vivado", "Proteus", "IoT", "Arduino", "ESP32", "Keil"] },
 ]
+
+export const SKILL_HINTS: Record<string, string> = {
+  "Reverse Engineering": "Low-level analysis and exploit tracing.",
+  "Exploit Dev": "Proof-of-concept payloads and rapid prototyping.",
+  "Network Recon": "Traffic mapping and signal discovery.",
+  "Adversarial ML": "Model stress testing and hostile input paths.",
+  TypeScript: "Typed UI logic and interactive systems.",
+  React: "Component-driven interfaces and state flow.",
+  "Next.js": "Full-stack app architecture and routing.",
+  WebGL: "GPU-driven visuals and shader experiments.",
+  "Framer Motion": "Subtle motion, transitions, and polish.",
+  Rust: "Systems runtime and performance-sensitive tooling.",
+  Go: "Concurrent services and efficient backends.",
+  Python: "Automation, ML pipelines, and scripting.",
+  PostgreSQL: "Structured storage and query design.",
+  "Distributed Systems": "Scalable services and resilient orchestration.",
+  Kubernetes: "Container scheduling and infrastructure scaling.",
+  eBPF: "Kernel-level observability and tracing.",
+  Vercel: "Fast deployment and edge delivery.",
+  "Edge Compute": "Low-latency processing near the source.",
+  Cryptography: "Secure abstractions and key handling.",
+  Vivado: "FPGA and SoC design flow.",
+  Proteus: "Circuit simulation and board validation.",
+  IoT: "Connected devices, sensors, and telemetry.",
+  Arduino: "Rapid embedded prototyping and control loops.",
+  ESP32: "Wi-Fi and BLE microcontroller development.",
+  Keil: "Embedded ARM toolchain and firmware builds.",
+}
 
 export const EXPERIENCE = [
   {

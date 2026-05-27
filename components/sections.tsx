@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionShell } from "./section-shell";
-import { DOSSIER, SKILLS, EXPERIENCE, PROJECTS } from "@/lib/data";
+import { DOSSIER, SKILLS, SKILL_HINTS, EXPERIENCE, PROJECTS } from "@/lib/data";
 import type { Project } from "@/lib/data";
 import {
   ChevronLeft,
@@ -16,7 +16,7 @@ import {
 
 const STATUS_DOT: Record<Project["status"], string> = {
   ACTIVE: "bg-[#00ff55]",
-  ARCHIVED: "bg-[#FFD700]",
+  ARCHIVED: "bg-[#808080]",
   CLASSIFIED: "bg-[#FF3B30]",
   EXPERIMENTAL: "bg-[#00BFFF]",
   DEVELOPMENT: "bg-[#FFD700]",
@@ -501,42 +501,303 @@ export function ArchivesSection({
   );
 }
 
+// ─── Arsenal helpers ────────────────────────────────────────────────
+function flatSkills(): string[] {
+  return SKILLS.flatMap((s) => s.items);
+}
+
+function seededRand(seed: number) {
+  const x = Math.sin(seed + 1) * 10000;
+  return x - Math.floor(x);
+}
+
+interface CloudSkill {
+  text: string;
+  hint: string;
+  fontSize: number;
+  x: number;
+  y: number;
+  delay: number;
+  duration: number;
+  dx: number;
+  dy: number;
+  opacity: number;
+  isAccent: boolean;
+}
+
+function buildCloudSkills(): CloudSkill[] {
+  const all = flatSkills();
+  const fontSizes = [10, 11, 13, 15, 17, 20];
+  return all.map((text, i) => {
+    const r = (offset: number) => seededRand(i * 13 + offset);
+    return {
+      text,
+      hint: SKILL_HINTS[text] ?? "Signal module loaded.",
+      fontSize: fontSizes[i % fontSizes.length],
+      // fully organic random spread within the canvas
+      x: 3 + r(0) * 85,
+      y: 3 + r(1) * 85,
+      delay: r(2) * 5,
+      duration: 9 + r(3) * 13,
+      dx: (r(4) - 0.5) * 44,
+      dy: (r(5) - 0.5) * 32,
+      opacity: 0.35 + r(6) * 0.55,
+      isAccent: i % 5 === 0,
+    };
+  });
+}
+
+const CLOUD_SKILLS = buildCloudSkills();
+
+// ─── ASCII Bird frames (realistic side-profile bird) ─────────────────
+// HEAD: round with eye ●
+// BEAK: points right, opens/closes
+// BODY: oval chest + wings
+// TAIL: fanned feathers left
+// LEGS: two thin stems with claws
+const BIRD_CLOSED = `
+     __
+   _/  \_      .-.
+  ( o  o )   ( o )
+   >  ^  <   /_\
+  /|_|_|\\
+`.trimStart();
+
+const BIRD_OPEN = `
+     __
+   _/  \_      .-.
+  ( o  o )   ( o )
+   >  v  <   /_\\
+  /|_|_|\\
+`.trimStart();
+// ─── Individual floating skill (correct Framer Motion pattern) ────────
+function FloatingSkill({
+  skill,
+  i,
+  speedBoost,
+}: {
+  skill: CloudSkill;
+  i: number;
+  speedBoost: number;
+}) {
+  return (
+    <motion.span
+      key={`cloud-${i}`}
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: skill.opacity,
+        x: [
+          0,
+          skill.dx * 0.35 * speedBoost,
+          skill.dx * 0.7 * speedBoost,
+          skill.dx * 0.25 * speedBoost,
+          0,
+        ],
+        y: [
+          0,
+          skill.dy * 0.25 * speedBoost,
+          skill.dy * 0.5 * speedBoost,
+          skill.dy * 0.2 * speedBoost,
+          0,
+        ],
+      }}
+      transition={{
+        opacity: { duration: 1.4, delay: skill.delay * 0.22, ease: "easeOut" },
+        x: {
+          duration: Math.max(5, skill.duration / speedBoost),
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: skill.delay,
+          repeatType: "mirror",
+        },
+        y: {
+          duration: Math.max(6, (skill.duration * 1.18) / speedBoost),
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: skill.delay * 0.75,
+          repeatType: "mirror",
+        },
+      }}
+      className="absolute font-mono select-none pointer-events-none"
+      style={{
+        left: `${skill.x}%`,
+        top: `${skill.y}%`,
+        fontSize: `${skill.fontSize}px`,
+        color: skill.isAccent ? "#39FF14" : "#e8d5ff",
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        willChange: "transform, opacity",
+      }}
+    >
+      <span className="block leading-none">{skill.text}</span>
+      <span className="mt-1 block text-[8px] uppercase tracking-[0.22em] text-[#d6ffd0]/70">
+        {skill.hint}
+      </span>
+    </motion.span>
+  );
+}
+
+// ─── Left panel: terminal bird + skill echo ───────────────────────────
+function ArsenalBird({ onBoost }: { onBoost: () => void }) {
+  const skills = flatSkills();
+  const [frame, setFrame] = useState(0);
+  const [skillIdx, setSkillIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  // Beak open/close every 500 ms while "speaking"
+  useEffect(() => {
+    const beakTimer = setInterval(() => setFrame((f) => 1 - f), 500);
+    return () => clearInterval(beakTimer);
+  }, []);
+
+  // Rotate skill every 2.4 s
+  useEffect(() => {
+    const skillTimer = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setSkillIdx((idx) => (idx + 1) % skills.length);
+        setVisible(true);
+      }, 280);
+    }, 2400);
+    return () => clearInterval(skillTimer);
+  }, [skills.length]);
+
+  return (
+    <div className="flex flex-col items-start gap-5">
+      {/* Shell prompt */}
+      <div className="font-mono text-[10px] tracking-[0.35em] text-[#39FF14]/40">
+        {"ob@server:~/arsenal$ ./process --bird"}
+      </div>
+
+      {/* Bird ASCII */}
+      <motion.button
+        type="button"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2 }}
+        onClick={onBoost}
+        className="font-mono leading-snug select-none rounded-md border border-[#39FF14]/10 bg-[#050505]/70 px-2 py-1 text-left transition-colors hover:border-[#39FF14]/30 hover:bg-[#39FF14]/5"
+        style={{
+          fontSize: "clamp(11px, 1.6vw, 15px)",
+          color: "#39FF14",
+          textShadow: "0 0 6px rgba(57,255,20,0.22)",
+          lineHeight: 1.45,
+        }}
+      >
+        <pre
+          style={{
+            margin: 0,
+            color: "#39FF14",
+            textShadow: "0 0 6px rgba(57,255,20,0.18)",
+            lineHeight: 1.35,
+          }}
+        >
+          {frame === 0 ? BIRD_CLOSED : BIRD_OPEN}
+        </pre>
+      </motion.button>
+
+      {/* Status pill */}
+      <div className="flex items-center gap-2 font-mono text-[10px] tracking-[0.28em]">
+        <span className="w-1.5 h-1.5 rounded-none bg-[#39FF14] animate-pulse" />
+        <span className="text-[#39FF14]/60">ARSENAL MODULE ACTIVE</span>
+      </div>
+
+      {/* Divider */}
+      <div className="w-full h-px bg-gradient-to-r from-[#39FF14]/25 to-transparent" />
+
+      {/* Terminal skill echo */}
+      <div className="font-mono text-xs space-y-1.5 w-full">
+        {/* Ghost history — last 3 */}
+        {[-3, -2, -1].map((offset) => {
+          const idx =
+            (((skillIdx + offset) % skills.length) + skills.length) %
+            skills.length;
+          return (
+            <div
+              key={`ghost-${offset}`}
+              className="text-[#39FF14]/18 tracking-[0.15em]"
+            >
+              {"›› "}
+              {skills[idx].toUpperCase()}
+            </div>
+          );
+        })}
+
+        {/* Active skill */}
+        <AnimatePresence mode="wait">
+          {visible && (
+            <motion.div
+              key={`skill-${skillIdx}`}
+              initial={{ opacity: 0, x: -5 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              className="flex items-center gap-2 tracking-[0.2em]"
+              style={{ color: "#39FF14" }}
+            >
+              <span className="text-[#39FF14]/40">{">"}</span>
+              <span>{skills[skillIdx].toUpperCase()}</span>
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.85, repeat: Infinity }}
+                className="text-[#39FF14]"
+              >
+                █
+              </motion.span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// ─── Right panel: freely floating skill cloud ─────────────────────────
+function ArsenalCloud({ speedBoost }: { speedBoost: number }) {
+  return (
+    <div
+      className="relative w-full overflow-hidden"
+      style={{ minHeight: "460px" }}
+      aria-label="Skill cloud"
+    >
+      {CLOUD_SKILLS.map((skill, i) => (
+        <FloatingSkill key={i} skill={skill} i={i} speedBoost={speedBoost} />
+      ))}
+    </div>
+  );
+}
+
+// ─── Main ArsenalSection ──────────────────────────────────────────────
 export function ArsenalSection() {
+  const [speedBoost, setSpeedBoost] = useState(1);
+
   return (
     <SectionShell id="arsenal" label="// 03 — ARSENAL.cfg" title="ARSENAL">
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {SKILLS.map((s, i) => (
-          <motion.div
-            key={s.category}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="holo-border p-5"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <TermIcon className="w-4 h-4 text-[#00ff66]" />
-              <h3
-                className="font-sans text-lg tracking-wider text-[#00ff66] neon-pink-glow"
-                style={{ fontFamily: "var(--font-pixel)" }}
-              >
-                {s.category}
-              </h3>
-            </div>
-            <ul className="space-y-2 font-mono text-xs">
-              {s.items.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-2 text-[#e8d5ff]"
-                >
-                  <span className="text-[#00ff55]">›</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="grid lg:grid-cols-[1fr_2fr] gap-0 items-start"
+      >
+        {/* LEFT — bird terminal — no box, just a right border line */}
+        <div className="py-2 pr-10 border-r border-[#39FF14]/10">
+          <ArsenalBird onBoost={() => setSpeedBoost((v) => v + 0.18)} />
+        </div>
+
+        {/* RIGHT — floating skill cloud — no box */}
+        <div className="py-2 pl-10">
+          <p className="font-mono text-[10px] tracking-[0.35em] text-[#39FF14]/40 mb-4">
+            {"ob@server:~/arsenal$ ls --cloud"}
+          </p>
+          <ArsenalCloud speedBoost={speedBoost} />
+          <div className="mt-2 h-px w-full bg-gradient-to-r from-transparent via-[#39FF14]/12 to-transparent" />
+          <p className="mt-2 font-mono text-[9px] tracking-[0.28em] text-[#39FF14]/25">
+            {`${flatSkills().length} MODULES LOADED — ALL SYSTEMS OPERATIONAL`}
+          </p>
+        </div>
+      </motion.div>
     </SectionShell>
   );
 }
@@ -548,38 +809,46 @@ export function MissionsSection() {
       label="// 04 — MISSION_LOGS.bin"
       title="MISSION LOGS"
     >
-      <div className="space-y-4">
-        {EXPERIENCE.map((m, i) => (
-          <motion.div
-            key={m.org}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="holo-border p-5 md:p-6 grid md:grid-cols-[180px_1fr] gap-4 md:gap-8"
-          >
-            <div className="font-mono text-xs">
-              <p className="text-[#00ff66] tracking-widest mb-1">{m.period}</p>
-              <p className="text-[#00ff55]/60 text-[10px]">
-                LOG #{String(i + 1).padStart(3, "0")}
-              </p>
-            </div>
-            <div>
-              <h3
-                className="font-sans text-xl md:text-2xl tracking-wider text-[#f5e8ff] neon-violet-glow mb-1"
-                style={{ fontFamily: "var(--font-pixel)" }}
-              >
-                {m.role}
-              </h3>
-              <p className="font-mono text-xs text-[#00ff55] tracking-widest mb-3">
-                @ {m.org}
-              </p>
-              <p className="font-mono text-sm text-[#e8d5ff] leading-relaxed">
-                {m.summary}
-              </p>
-            </div>
-          </motion.div>
-        ))}
+      <div className="space-y-6 border-t border-[#39FF14]/10 pt-8">
+        {EXPERIENCE.map((entry, index) => {
+          const year = entry.period.match(/\d{4}/)?.[0] ?? entry.period;
+
+          return (
+            <motion.div
+              key={`${entry.org}-${entry.role}-${index}`}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, delay: index * 0.05 }}
+              className="space-y-4 border-b border-[#39FF14]/10 pb-6 last:border-b-0 last:pb-0"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div className="flex items-center gap-3 text-[#39FF14]/80">
+                  <span className="text-[11px] uppercase tracking-[0.35em] font-medium">
+                    {year}
+                  </span>
+                  <span className="hidden h-px w-16 bg-[#39FF14]/20 sm:inline-block" />
+                </div>
+                <p className="text-xs uppercase tracking-[0.35em] text-[#39FF14]/60">
+                  {entry.org}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold text-white leading-tight">
+                  {entry.role}
+                </h3>
+                <p className="text-sm leading-7 text-[#f8f8f8]">
+                  {entry.summary}
+                </p>
+              </div>
+
+              {index < EXPERIENCE.length - 1 ? (
+                <div className="h-px bg-[#39FF14]/10" />
+              ) : null}
+            </motion.div>
+          );
+        })}
       </div>
     </SectionShell>
   );
