@@ -1,33 +1,46 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { BootSequence } from "@/components/boot-sequence"
-import { Terminal, type CommandTarget } from "@/components/terminal"
-import { ProjectPanel } from "@/components/project-panel"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { BootSequence } from "@/components/boot-sequence";
+import { Terminal, type CommandTarget } from "@/components/terminal";
+import { ProjectPanel } from "@/components/project-panel";
 import {
   DossierSection,
   ArchivesSection,
   ArsenalSection,
   MissionsSection,
   ContactSection,
-} from "@/components/sections"
-import type { Project } from "@/lib/data"
+} from "@/components/sections";
+import type { Project } from "@/lib/data";
 
 export default function Home() {
-  const [booted, setBooted] = useState(false)
-  const [activeProject, setActiveProject] = useState<Project | null>(null)
+  const [booted, setBooted] = useState(false);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [viewMode, setViewMode] = useState<"terminal" | "scroll">("terminal");
+
+  const [activeSection, setActiveSection] = useState<
+    "dossier" | "archives" | "arsenal" | "missions" | "contact" | null
+  >("dossier");
 
   const handleCommand = (target: CommandTarget) => {
-    const el = document.getElementById(target)
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" })
+    if (viewMode === "terminal") {
+      setActiveSection(target);
+      return;
     }
-  }
+
+    const el = document.getElementById(target);
+
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <main className="relative z-60 min-h-screen text-foreground overflow-x-hidden">
-
       {!booted && <BootSequence onComplete={() => setBooted(true)} />}
 
       {booted && (
@@ -97,9 +110,38 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="w-full px-2 md:px-4"
+              className="w-full px-2 md:px-4 flex flex-col items-center"
             >
-              <Terminal onCommand={handleCommand} />
+              {/* MODE TOGGLE */}
+              <div className="mb-8 flex items-center border border-[#39FF14]/30 bg-[#050505] rounded-md overflow-hidden">
+                <button
+                  onClick={() => setViewMode("terminal")}
+                  className={`px-6 py-3 font-mono text-xs tracking-[0.25em] transition-all ${
+                    viewMode === "terminal"
+                      ? "bg-[#39FF14] text-black"
+                      : "text-[#39FF14]"
+                  }`}
+                >
+                  TERMINAL
+                </button>
+
+                <button
+                  onClick={() => setViewMode("scroll")}
+                  className={`px-6 py-3 font-mono text-xs tracking-[0.25em] transition-all ${
+                    viewMode === "scroll"
+                      ? "bg-[#39FF14] text-black"
+                      : "text-[#39FF14]"
+                  }`}
+                >
+                  SCROLL
+                </button>
+              </div>
+
+              {viewMode === "terminal" && (
+                <div className="w-full">
+                  <Terminal onCommand={handleCommand} />
+                </div>
+              )}
             </motion.div>
 
             <motion.div
@@ -114,11 +156,29 @@ export default function Home() {
             </motion.div>
           </section>
 
-          <DossierSection />
-          <ArchivesSection onSelect={setActiveProject} />
-          <ArsenalSection />
-          <MissionsSection />
-          <ContactSection />
+          {viewMode === "terminal" ? (
+            <div className="mt-10 w-full px-4">
+              {activeSection === "dossier" && <DossierSection />}
+
+              {activeSection === "archives" && (
+                <ArchivesSection onSelect={setActiveProject} />
+              )}
+
+              {activeSection === "arsenal" && <ArsenalSection />}
+
+              {activeSection === "missions" && <MissionsSection />}
+
+              {activeSection === "contact" && <ContactSection />}
+            </div>
+          ) : (
+            <>
+              <DossierSection />
+              <ArchivesSection onSelect={setActiveProject} />
+              <ArsenalSection />
+              <MissionsSection />
+              <ContactSection />
+            </>
+          )}
 
           <ProjectPanel
             project={activeProject}
@@ -127,5 +187,5 @@ export default function Home() {
         </>
       )}
     </main>
-  )
+  );
 }

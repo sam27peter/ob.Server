@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
-import type { Project } from "@/lib/data"
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import type { Project } from "@/lib/data";
 
 const COMMANDS = [
   { cmd: "DOSSIER", target: "dossier", label: "About" },
@@ -10,29 +10,34 @@ const COMMANDS = [
   { cmd: "ARSENAL", target: "arsenal", label: "Skills" },
   { cmd: "MISSION_LOGS", target: "missions", label: "Experience" },
   { cmd: "CONTACT_CHANNEL", target: "contact", label: "Contact" },
-] as const
+] as const;
 
-type CommandTarget = (typeof COMMANDS)[number]["target"]
+type CommandTarget = (typeof COMMANDS)[number]["target"];
 
 export function Terminal({
   onCommand,
 }: {
-  onCommand: (target: CommandTarget) => void
+  onCommand: (target: CommandTarget) => void;
 }) {
-  const [input, setInput] = useState("")
-  const [history, setHistory] = useState<{ type: "in" | "out" | "err"; text: string }[]>([
-    { type: "out", text: "ob.Server v3.14.1 — type 'help' for commands or click below." },
-  ])
-  const inputRef = useRef<HTMLInputElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [input, setInput] = useState("");
+  const [history, setHistory] = useState<
+    { type: "in" | "out" | "err"; text: string }[]
+  >([
+    {
+      type: "out",
+      text: "ob.Server v3.14.1 — type 'help' for commands or click below.",
+    },
+  ]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
-  }, [history])
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+  }, [history]);
 
   const runCommand = (raw: string) => {
-    const cmd = raw.trim().toUpperCase().replace(/\s+/g, "_")
-    setHistory((h) => [...h, { type: "in", text: raw }])
+    const cmd = raw.trim().toUpperCase().replace(/\s+/g, "_");
+    setHistory((h) => [...h, { type: "in", text: raw }]);
 
     if (cmd === "HELP" || cmd === "?") {
       setHistory((h) => [
@@ -42,37 +47,67 @@ export function Terminal({
           text: `  ${c.cmd.padEnd(20)} → ${c.label}`,
         })),
         { type: "out", text: "  CLEAR                → Clear terminal" },
-      ])
-      return
+      ]);
+      return;
     }
 
     if (cmd === "CLEAR" || cmd === "CLS") {
-      setHistory([])
-      return
+      setHistory([]);
+      return;
     }
 
-    const match = COMMANDS.find((c) => c.cmd === cmd || c.cmd.replace(/_/g, "") === cmd.replace(/_/g, ""))
+    const match = COMMANDS.find(
+      (c) => c.cmd === cmd || c.cmd.replace(/_/g, "") === cmd.replace(/_/g, ""),
+    );
+
     if (match) {
       setHistory((h) => [
         ...h,
-        { type: "out", text: `>> Routing to ${match.cmd}...` },
-      ])
-      setTimeout(() => onCommand(match.target), 350)
-      return
+        {
+          type: "out",
+          text: `>> ACCESSING ${match.cmd}...`,
+        },
+      ]);
+
+      setTimeout(() => {
+        setHistory((h) => [
+          ...h,
+          {
+            type: "out",
+            text: ">> DECRYPTING RECORDS...",
+          },
+        ]);
+      }, 500);
+
+      setTimeout(() => {
+        setHistory((h) => [
+          ...h,
+          {
+            type: "out",
+            text: ">> ACCESS GRANTED",
+          },
+        ]);
+      }, 1000);
+
+      setTimeout(() => {
+        onCommand(match.target);
+      }, 1300);
+
+      return;
     }
 
     setHistory((h) => [
       ...h,
       { type: "err", text: `command not found: ${raw}. type 'help'.` },
-    ])
-  }
+    ]);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
-    runCommand(input)
-    setInput("")
-  }
+    e.preventDefault();
+    if (!input.trim()) return;
+    runCommand(input);
+    setInput("");
+  };
 
   return (
     <motion.div
@@ -129,10 +164,10 @@ export function Terminal({
             key={i}
             className={
               line.type === "in"
-                ? "text-[#f5e8ff]"
+                ? "text-white"
                 : line.type === "err"
-                  ? "text-[#00ff66]"
-                  : "text-[#00ff55]"
+                  ? "text-[#39FF14]"
+                  : "text-white"
             }
           >
             {line.type === "in" ? (
@@ -161,7 +196,7 @@ export function Terminal({
         </form>
       </div>
     </motion.div>
-  )
+  );
 }
 
-export type { CommandTarget, Project }
+export type { CommandTarget, Project };
