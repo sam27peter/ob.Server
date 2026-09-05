@@ -1,135 +1,128 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Terminal, ShieldCheck, Code2, Flame } from "lucide-react";
+import Image from "next/image";
+
+const stats = [
+  { value: "20", suffix: "+", label: "PROJECTS COMPLETED" },
+  { value: "2ND", suffix: "", label: "RUNNER-UP CPL" },
+  { value: "2", suffix: "", label: "INTERNSHIPS" },
+  { value: "10", suffix: "+", label: "EVENTS ORGANISED" },
+];
 
 export default function WhoAmI() {
   return (
     <section
       id="who-am-i"
-      className="relative z-10 py-28 px-6 md:px-12 bg-[#080808]/90 backdrop-blur-sm text-white font-mono border-t border-white/5"
+      className="relative min-h-screen w-full bg-[#ff5500] text-black font-mono flex items-center pt-20 pb-0 overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto space-y-12">
-        {/* Section Title */}
-        <div className="flex flex-col items-center text-center space-y-2">
-          <span className="text-orange-500 text-xs tracking-widest uppercase font-semibold">
-            [ IDENTITY DIAGNOSTICS ]
-          </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-            WHO_<span className="text-orange-500">AM_I</span>
-          </h2>
-          <div className="w-12 h-0.5 bg-orange-500/60 mt-2" />
+      <div className="max-w-7xl w-full mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 h-full">
+        {/* --- LEFT COLUMN: EDITORIAL BIO --- */}
+        <div className="lg:col-span-7 flex flex-col justify-center space-y-12 z-20 pb-16 lg:pb-24 pt-12">
+          {/* Giant Greeting Title */}
+          <div className="flex flex-col">
+            <motion.h2
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white uppercase drop-shadow-md mb-2"
+            >
+              HELLO,
+            </motion.h2>
+
+            <motion.h2
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              style={{ fontFamily: "var(--font-moderncyber)" }}
+              className="text-6xl md:text-8xl lg:text-9xl text-black tracking-wider leading-[0.85] uppercase"
+            >
+              I&apos;M
+            </motion.h2>
+
+            <motion.h2
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              style={{ fontFamily: "var(--font-moderncyber)" }}
+              className="text-7xl md:text-9xl lg:text-[11rem] text-black tracking-wider leading-[0.8] uppercase"
+            >
+              SAM
+            </motion.h2>
+          </div>
+
+          {/* Bio Glassmorphism Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="space-y-6 text-black/95 font-medium text-sm md:text-base leading-relaxed max-w-lg bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl"
+          >
+            <p>
+              I&apos;m a{" "}
+              <span className="text-white font-bold">
+                4th-year Electronics & Communication Engineering
+              </span>{" "}
+              student and a dedicated problem solver. Constantly driven by
+              curiosity, I specialize in finding efficient, real-world solutions
+              by bridging hardware logic with software architecture.
+            </p>
+            <p>
+              When I&apos;m not building impactful tech solutions, you can
+              usually find me participating in{" "}
+              <span className="text-white font-bold">sports</span>, enjoying{" "}
+              <span className="text-white font-bold">casual gaming</span>, or{" "}
+              <span className="text-white font-bold">travelling</span> to
+              explore new places.
+            </p>
+          </motion.div>
         </div>
 
-        {/* Central HUD Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="relative bg-[#0d0d0d] border border-orange-500/20 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(255,85,0,0.06)] overflow-hidden"
-        >
-          {/* Subtle Ambient Corner Glow */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-
-          {/* Terminal Window Header */}
-          <div className="flex justify-between items-center pb-4 mb-6 border-b border-gray-800/80 text-xs text-gray-400">
-            <div className="flex items-center gap-2">
-              <Terminal size={15} className="text-orange-500" />
-              <span className="text-white font-medium">
-                identity_profile.sys
-              </span>
-            </div>
-            <span className="text-orange-500 font-bold">
-              [ VERIFIED OPERATOR ]
-            </span>
+        {/* --- RIGHT COLUMN: STATS & PORTRAIT --- */}
+        <div className="lg:col-span-5 flex flex-col h-full z-10 pt-12 lg:pt-24">
+          {/* Borderless Stats Grid (Pushed to the top of the column) */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 max-w-md z-30 mb-8 px-4">
+            {stats.map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + idx * 0.1 }}
+                viewport={{ once: true }}
+                className="flex flex-col space-y-1"
+              >
+                <span className="text-4xl md:text-5xl font-black text-white tracking-tighter drop-shadow-sm">
+                  {stat.value}
+                  <span className="text-black">{stat.suffix}</span>
+                </span>
+                <span className="text-[10px] md:text-xs font-bold text-black/80 tracking-[0.2em] uppercase">
+                  {stat.label}
+                </span>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Core Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {/* Left Narrative */}
-            <div className="md:col-span-2 space-y-4">
-              <p className="text-sm md:text-base text-gray-200 leading-relaxed">
-                I am a passionate{" "}
-                <span className="text-orange-500 font-semibold">
-                  AI Developer & Full-Stack Engineer
-                </span>{" "}
-                focused on creating intelligent systems that solve real-world
-                problems.
-              </p>
-              <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                My work spans computer vision, machine learning telemetry, and
-                responsive frontend architectures. I thrive in building systems
-                that combine raw performance with striking visual polish.
-              </p>
-
-              {/* Quick Specs */}
-              <div className="pt-4 grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-lg bg-black/60 border border-gray-800">
-                  <span className="text-gray-500 block mb-1">
-                    // PRIMARY FOCUS
-                  </span>
-                  <span className="text-white font-semibold">
-                    AI Models & Modern Web
-                  </span>
-                </div>
-                <div className="p-3 rounded-lg bg-black/60 border border-gray-800">
-                  <span className="text-gray-500 block mb-1">
-                    // DESIGN PHILOSOPHY
-                  </span>
-                  <span className="text-white font-semibold">
-                    Minimal & High Contrast
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Diagnostic Stats */}
-            <div className="flex flex-col justify-between gap-3 bg-black/50 p-5 rounded-xl border border-gray-800/90">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Flame className="text-orange-500" size={18} />
-                  <div>
-                    <p className="text-[10px] text-gray-500 uppercase">
-                      Architecture
-                    </p>
-                    <p className="text-xs font-bold text-white">
-                      Modular & Scalable
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Code2 className="text-orange-500" size={18} />
-                  <div>
-                    <p className="text-[10px] text-gray-500 uppercase">
-                      Core Languages
-                    </p>
-                    <p className="text-xs font-bold text-white">
-                      Python, TypeScript
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <ShieldCheck className="text-orange-500" size={18} />
-                  <div>
-                    <p className="text-[10px] text-gray-500 uppercase">
-                      Status
-                    </p>
-                    <p className="text-xs font-bold text-orange-500">
-                      Available for Hire
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-gray-800 text-[11px] text-gray-500 text-center">
-                SYSTEM ID: <span className="text-gray-300">OB-SERVER-V2</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          {/* Bottom-Anchored Portrait (Fills remaining space below stats) */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+            viewport={{ once: true }}
+            className="relative flex-grow min-h-[400px] lg:min-h-[500px] w-full pointer-events-none mt-auto z-20"
+          >
+            <Image
+              src="/images/whoami-profile.png"
+              alt="Sam Peter"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-contain object-bottom drop-shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   );
