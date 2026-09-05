@@ -1,18 +1,109 @@
 @import "tailwindcss";
 
-html,
+/* =================================
+   LOCAL FONTS
+================================= */
+
+@font-face {
+  font-family: "Gakuran";
+  src: url("/fonts/Gakuran.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Grandover";
+  src: url("/fonts/Grandover.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hexaline";
+  src: url("/fonts/Hexaline.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ModernCyber";
+  src: url("/fonts/ModernCyber.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ryzes";
+  src: url("/fonts/Ryzes.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Savery";
+  src: url("/fonts/Savery.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SaveryOutline";
+  src: url("/fonts/SaveryOutline.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* =================================
+   FONT VARIABLES
+================================= */
+
+:root {
+  --font-gakuran: "Gakuran", sans-serif;
+  --font-grandover: "Grandover", sans-serif;
+  --font-hexaline: "Hexaline", sans-serif;
+  --font-moderncyber: "ModernCyber", sans-serif;
+  --font-ryzes: "Ryzes", sans-serif;
+  --font-savery: "Savery", sans-serif;
+  --font-savery-outline: "SaveryOutline", sans-serif;
+}
+
+/* =================================
+   GLOBAL RESET
+================================= */
+
+html {
+  scroll-behavior: smooth;
+  background: #080808;
+}
+
 body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #080808;
+  background: #080808;
   color: #ffffff;
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
-/* Custom Minimal Orange Scrollbar */
+/* =================================
+   HERO GRID
+================================= */
+
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+
+  background-size: 86px 86px;
+}
+
+/* =================================
+   SELECTION
+================================= */
+
+::selection {
+  background-color: #ff5500;
+  color: #000000;
+}
+
+/* =================================
+   SCROLLBAR
+================================= */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -23,15 +114,9 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #ff5500;
-  border-radius: 3px;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #ff7722;
-}
-
-/* Glowing text selection */
-::selection {
-  background-color: #ff5500;
-  color: #000000;
 }

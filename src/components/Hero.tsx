@@ -1,91 +1,258 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 export default function Hero() {
-  const { scrollYProgress } = useScroll();
-
-  const opacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.05]);
-  const scale = useTransform(scrollYProgress, [0, 0.25], [1, 0.95]);
-
   return (
-    <motion.section
-      style={{ opacity, scale }}
-      className="relative min-h-screen w-full bg-[#f4f4f6] text-[#0a0a0a] flex flex-col justify-between p-6 sm:p-10 font-mono overflow-hidden select-none"
+    <section
+      id="home"
+      className="relative min-h-[100svh] overflow-hidden bg-[#080808] text-white"
     >
-      {/* HUD CORNER BRACKETS */}
-      <div className="absolute top-5 left-5 w-8 h-8 border-t-2 border-l-2 border-orange-600/80 pointer-events-none z-30" />
-      <div className="absolute top-5 right-5 w-8 h-8 border-t-2 border-r-2 border-orange-600/80 pointer-events-none z-30" />
-      <div className="absolute bottom-5 left-5 w-8 h-8 border-b-2 border-l-2 border-orange-600/80 pointer-events-none z-30" />
-      <div className="absolute bottom-5 right-5 w-8 h-8 border-b-2 border-r-2 border-orange-600/80 pointer-events-none z-30" />
+      {/* =========================================================
+          BACKGROUND
+      ========================================================= */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* Grid */}
+        <div className="hero-grid absolute inset-0" />
 
-      {/* TOP TERMINAL HEADER */}
-      <header className="relative z-30 flex justify-between items-center text-xs tracking-wider border-b border-zinc-300/80 pb-3">
-        <div className="flex items-center space-x-2 font-bold">
-          <span className="inline-block w-2.5 h-2.5 bg-orange-600 rounded-sm animate-pulse" />
-          <span className="text-zinc-900 tracking-widest">ob.server</span>
-          <span className="text-orange-600 font-extrabold">@domain:~$ _</span>
-        </div>
-        <div className="flex items-center space-x-2 text-[11px] font-semibold text-zinc-600">
-          <span className="bg-orange-500/10 border border-orange-500/30 text-orange-600 px-3 py-1 rounded-full">
-            SYSTEM STATUS: <span className="font-bold">READY</span>
-          </span>
-        </div>
+        {/* Orange ambient glow */}
+        <div className="absolute left-[48%] top-[20%] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#ff5500]/[0.07] blur-[160px]" />
+
+        {/* Decorative circle */}
+        <div className="absolute left-[8%] top-[25%] hidden h-[300px] w-[300px] rounded-full border border-white/[0.10] lg:block" />
+
+        {/* Horizontal orange line */}
+        <div className="absolute left-[4%] top-[38%] hidden h-px w-[22%] bg-[#ff5500]/60 lg:block" />
+
+        {/* Horizontal white line */}
+        <div className="absolute right-[7%] top-[27%] hidden h-px w-[15%] bg-white/[0.10] lg:block" />
+
+        {/* Orange square */}
+        <div className="absolute left-[6%] top-[28%] hidden h-2.5 w-2.5 bg-[#ff5500] lg:block" />
+
+        {/* Bottom line */}
+        <div className="absolute bottom-[13%] left-[4%] hidden h-px w-[38%] bg-white/[0.08] lg:block" />
+
+        {/* Extra right side accent */}
+        <div className="absolute right-[8%] top-[48%] hidden h-2 w-2 rounded-full bg-[#ff5500] lg:block" />
+
+        {/* Right vertical line */}
+        <div className="absolute bottom-[10%] right-[7%] hidden h-[70px] w-px bg-white/[0.10] lg:block" />
+      </div>
+
+      {/* =========================================================
+          NAVIGATION
+      ========================================================= */}
+      <header className="relative z-40 flex items-center justify-between px-5 py-5 sm:px-8 lg:px-[4.2vw] lg:py-8">
+        {/* Logo */}
+        <a
+          href="#home"
+          className="text-2xl leading-none text-white"
+          style={{
+            fontFamily: "var(--font-gakuran)",
+          }}
+        >
+          Ob.Server
+        </a>
+
+        {/* Desktop navigation */}
+        <nav className="hidden items-center gap-10 lg:flex">
+          <a
+            href="#about"
+            className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/55 transition hover:text-[#ff5500]"
+          >
+            About
+          </a>
+
+          <a
+            href="#projects"
+            className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/55 transition hover:text-[#ff5500]"
+          >
+            Projects
+          </a>
+
+          <a
+            href="#contact"
+            className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/55 transition hover:text-[#ff5500]"
+          >
+            Contact
+          </a>
+        </nav>
+
+        {/* Desktop CTA */}
+        <a
+          href="#projects"
+          className="hidden border border-[#ff5500] bg-[#ff5500] px-8 py-4 text-[10px] font-bold uppercase tracking-[0.22em] text-black transition duration-200 hover:bg-transparent hover:text-[#ff5500] lg:block"
+        >
+          Enter Terminal ↗
+        </a>
+
+        {/* Mobile triple-dot button */}
+        <button
+          type="button"
+          aria-label="Open navigation"
+          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full border border-white/15 lg:hidden"
+        >
+          <span className="h-1 w-1 rounded-full bg-white" />
+          <span className="h-1 w-1 rounded-full bg-[#ff5500]" />
+          <span className="h-1 w-1 rounded-full bg-white" />
+        </button>
       </header>
 
-      {/* MAIN HERO DISPLAY */}
-      <div className="relative flex-1 flex items-center justify-center my-2 z-20">
-        {/* Layer 1: Watermark Title */}
-        <div className="absolute w-full text-center z-0 pointer-events-none">
-          <h1
-            style={{ fontFamily: "var(--font-moderncyber)" }}
-            className="text-[13vw] sm:text-[14vw] leading-none tracking-tight text-zinc-900 font-normal select-none"
-          >
-            SAM <span className="text-orange-600">PETER</span>
-          </h1>
-        </div>
+      {/* =========================================================
+          MOBILE HERO
+      ========================================================= */}
+      <div className="relative z-20 flex min-h-[calc(100svh-72px)] flex-col items-center px-5 pt-2 lg:hidden">
+        {/* =====================================================
+            MOBILE IMAGE
 
-        {/* Layer 2: Clean Cutout Subject (2.png) */}
-        <div className="relative z-10 w-[340px] sm:w-[480px] md:w-[580px] h-[500px] sm:h-[620px] md:h-[720px] flex items-end justify-center">
+            CHANGE IMAGE SIZE HERE:
+
+            h-[220px] = image container height
+            max-w-[280px] = image container width
+
+            Increase these values to make image bigger.
+        ===================================================== */}
+        <div className="relative h-[250px] w-full max-w-[290px] xs:h-[280px] sm:h-[330px] sm:max-w-[350px]">
           <Image
             src="/images/hero-subject.png"
             alt="Sam Peter"
             fill
             priority
-            sizes="100vw"
-            className="object-contain object-bottom pointer-events-none drop-shadow-[0_15px_25px_rgba(0,0,0,0.2)]"
+            sizes="(max-width: 640px) 290px, 350px"
+            className="object-contain object-bottom"
           />
         </div>
 
-        {/* Layer 3: Access Terminal Button */}
-        <div className="absolute bottom-2 sm:bottom-4 z-30">
-          <motion.a
-            href="#who-am-i"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3.5 rounded-xl border-2 border-orange-600 bg-zinc-950 text-white font-extrabold text-xs sm:text-sm tracking-widest hover:bg-orange-600 transition-all duration-300 flex items-center gap-2 shadow-[0_10px_25px_rgba(255,85,0,0.25)]"
+        {/* =====================================================
+            MOBILE NAME
+        ===================================================== */}
+        <div className="-mt-1 flex w-full flex-col items-center text-center">
+          <h1
+            className="leading-[0.72] tracking-[-0.06em] text-[#f4e5d8]"
+            style={{
+              fontFamily: "var(--font-savery)",
+              fontSize: "clamp(5rem, 26vw, 9rem)",
+            }}
           >
-            <span className="text-orange-500 font-black">&gt;</span> ACCESS
-            TERMINAL
-          </motion.a>
+            SAM
+          </h1>
+
+          <h1
+            className="mt-[0.12em] leading-[0.72] tracking-[-0.06em] text-[#ff5500]"
+            style={{
+              fontFamily: "var(--font-savery)",
+              fontSize: "clamp(5rem, 26vw, 9rem)",
+            }}
+          >
+            PETER
+          </h1>
+        </div>
+
+        {/* Mobile accent */}
+        <div className="mt-8 flex items-center gap-3">
+          <span className="h-px w-8 bg-[#ff5500]" />
+
+          <span className="text-center text-[7px] uppercase tracking-[0.24em] text-white/45">
+            Dev / Build / Innovate
+          </span>
+
+          <span className="h-px w-8 bg-[#ff5500]" />
         </div>
       </div>
 
-      {/* FOOTER */}
-      <footer className="relative z-30 flex justify-between items-end text-xs text-zinc-700 font-mono pt-3 border-t border-zinc-300/60">
-        <div>
-          <p className="text-orange-600 font-extrabold text-[11px] tracking-widest">
-            / DEV / BUILD / INNOVATE
-          </p>
-          <p className="text-sm text-zinc-900 font-bold">
-            I build solutions that make an impact.
-          </p>
+      {/* =========================================================
+          DESKTOP / LAPTOP HERO
+      ========================================================= */}
+      <div className="relative z-10 hidden min-h-[calc(100svh-96px)] lg:block">
+        {/* =====================================================
+            MAIN HEADING
+        ===================================================== */}
+        <div className="absolute left-[6vw] top-[-1vh] z-10">
+          <h1
+            className="leading-[0.76] tracking-[-0.06em] text-[#f4e5d8]"
+            style={{
+              fontFamily: "var(--font-savery)",
+              fontSize: "clamp(8rem, 16vw, 18rem)",
+            }}
+          >
+            SAM
+          </h1>
+
+          <h1
+            className="mt-[0.05em] leading-[0.76] tracking-[-0.06em] text-[#ff5500]"
+            style={{
+              fontFamily: "var(--font-savery)",
+              fontSize: "clamp(8rem, 16vw, 18rem)",
+            }}
+          >
+            PETER
+          </h1>
         </div>
-        <div className="flex flex-col items-end text-zinc-400 text-xs">
-          <span className="text-orange-600 font-bold">&gt;_</span>
+
+        {/* =====================================================
+            DESKTOP SUBJECT IMAGE
+
+            CHANGE IMAGE SIZE HERE:
+
+            right-[0vw]  -> move image left/right
+            bottom-0     -> move image up/down
+            w-[58vw]     -> main image size
+            max-w-[950px] -> maximum size
+
+            EXAMPLES:
+
+            Make BIGGER:
+            w-[65vw] max-w-[1100px]
+
+            Move LEFT:
+            right-[8vw]
+
+            Move RIGHT:
+            right-[-3vw]
+
+            Move UP:
+            bottom-[5vh]
+        ===================================================== */}
+        <div className="absolute bottom-0 right-[-3vw] z-20 h-[95vh] w-[65vw] max-w-[1100px]">
+          <Image
+            src="/images/hero-subject.png"
+            alt="Sam Peter"
+            fill
+            priority
+            sizes="(max-width: 1200px) 65vw, 1100px"
+            className="object-contain object-bottom"
+          />
         </div>
-      </footer>
-    </motion.section>
+
+        {/* =====================================================
+            BOTTOM LEFT CONTENT
+        ===================================================== */}
+        <div className="absolute bottom-[7vh] left-[4.2vw] z-30 max-w-[340px]">
+          <div className="mb-6 h-px w-12 bg-[#ff5500]" />
+
+          <p className="mb-5 text-[9px] font-semibold uppercase tracking-[0.3em] text-[#ff5500]">
+            Dev / Build / Innovate
+          </p>
+
+          <p className="font-mono text-[18px] leading-[1.55] text-white/80">
+            Building solutions
+            <br />
+            that make an impact.
+          </p>
+
+          <div className="mt-7 border-l border-white/15 pl-4 text-[8px] uppercase tracking-[0.22em] leading-6 text-white/40">
+            <p>Software Developer</p>
+            <p>AI Enthusiast</p>
+            <p>Lifelong Learner</p>
+          </div>
+        </div>
+
+        {/* Bottom left mark */}
+        <div className="absolute bottom-6 left-[1.2vw] z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-sm text-white/70">
+          N
+        </div>
+      </div>
+    </section>
   );
 }

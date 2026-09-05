@@ -9,11 +9,9 @@ import Contact from "@/components/Contact";
 export default function Home() {
   return (
     <>
-      {/* Fixed interactive constellation layer */}
       <ConstellationCanvas />
 
-      {/* Main website */}
-      <main className="relative z-10 min-h-screen bg-transparent text-white selection:bg-orange-500 selection:text-black font-mono">
+      <main className="relative z-10 min-h-screen bg-transparent font-mono text-white selection:bg-[#ff5500] selection:text-black">
         <Hero />
         <WhoAmI />
         <TechMarquee />
