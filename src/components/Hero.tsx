@@ -2,6 +2,29 @@
 
 import Image from "next/image";
 
+const stats = [
+  {
+    value: "20",
+    suffix: "+",
+    label: "PROJECTS COMPLETED",
+  },
+  {
+    value: "2ND",
+    suffix: "",
+    label: "RUNNER-UP CPL",
+  },
+  {
+    value: "2",
+    suffix: "",
+    label: "INTERNSHIPS",
+  },
+  {
+    value: "10",
+    suffix: "+",
+    label: "EVENTS ORGANISED",
+  },
+];
+
 export default function Hero() {
   return (
     <section
@@ -103,16 +126,7 @@ export default function Hero() {
           MOBILE HERO
       ========================================================= */}
       <div className="relative z-20 flex min-h-[calc(100svh-72px)] flex-col items-center px-5 pt-2 lg:hidden">
-        {/* =====================================================
-            MOBILE IMAGE
-
-            CHANGE IMAGE SIZE HERE:
-
-            h-[220px] = image container height
-            max-w-[280px] = image container width
-
-            Increase these values to make image bigger.
-        ===================================================== */}
+        {/* MOBILE IMAGE */}
         <div className="relative h-[250px] w-full max-w-[290px] xs:h-[280px] sm:h-[330px] sm:max-w-[350px]">
           <Image
             src="/images/hero-subject.png"
@@ -124,9 +138,7 @@ export default function Hero() {
           />
         </div>
 
-        {/* =====================================================
-            MOBILE NAME
-        ===================================================== */}
+        {/* MOBILE NAME */}
         <div className="-mt-1 flex w-full flex-col items-center text-center">
           <h1
             className="leading-[0.72] tracking-[-0.06em] text-[#f4e5d8]"
@@ -167,7 +179,7 @@ export default function Hero() {
       <div className="relative z-10 hidden min-h-[calc(100svh-96px)] lg:block">
         {/* =====================================================
             MAIN HEADING
-        ===================================================== */}
+        ====================================================== */}
         <div className="absolute left-[6vw] top-[-1vh] z-10">
           <h1
             className="leading-[0.76] tracking-[-0.06em] text-[#f4e5d8]"
@@ -192,42 +204,56 @@ export default function Hero() {
 
         {/* =====================================================
             DESKTOP SUBJECT IMAGE
-
-            CHANGE IMAGE SIZE HERE:
-
-            right-[0vw]  -> move image left/right
-            bottom-0     -> move image up/down
-            w-[58vw]     -> main image size
-            max-w-[950px] -> maximum size
-
-            EXAMPLES:
-
-            Make BIGGER:
-            w-[65vw] max-w-[1100px]
-
-            Move LEFT:
-            right-[8vw]
-
-            Move RIGHT:
-            right-[-3vw]
-
-            Move UP:
-            bottom-[5vh]
-        ===================================================== */}
-        <div className="absolute bottom-0 right-[-3vw] z-20 h-[95vh] w-[65vw] max-w-[1100px]">
+        ====================================================== */}
+        <div className="absolute bottom-0 right-[5vw] z-20 h-[95vh] w-[58vw] max-w-[1050px]">
           <Image
             src="/images/hero-subject.png"
             alt="Sam Peter"
             fill
             priority
-            sizes="(max-width: 1200px) 65vw, 1100px"
+            sizes="(max-width: 1200px) 58vw, 1050px"
             className="object-contain object-bottom"
           />
         </div>
 
         {/* =====================================================
+            DESKTOP STATS
+            1 COLUMN × 4 ROWS
+
+            Only visible on desktop.
+        ====================================================== */}
+        <div className="absolute right-[-1vw] top-[5%] z-30 hidden w-[180px] flex-col lg:flex">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col py-5 ${
+                index !== 0 ? "border-t border-white/10" : ""
+              }`}
+            >
+              {/* Stat Number */}
+              <div className="flex items-baseline">
+                <span className="font-mono text-5xl font-black leading-none tracking-[-0.08em] text-[#f4e5d8] xl:text-6xl">
+                  {stat.value}
+                </span>
+
+                {stat.suffix && (
+                  <span className="ml-1 font-mono text-3xl font-black text-[#ff5500] xl:text-4xl">
+                    {stat.suffix}
+                  </span>
+                )}
+              </div>
+
+              {/* Stat Label */}
+              <span className="mt-3 font-mono text-[8px] font-bold uppercase leading-relaxed tracking-[0.24em] text-white/45">
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* =====================================================
             BOTTOM LEFT CONTENT
-        ===================================================== */}
+        ====================================================== */}
         <div className="absolute bottom-[7vh] left-[4.2vw] z-30 max-w-[340px]">
           <div className="mb-6 h-px w-12 bg-[#ff5500]" />
 
